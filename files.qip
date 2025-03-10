@@ -1,4 +1,3 @@
-
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/vectrex_mist.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/sdram.sv
 set_global_assignment -name VHDL_FILE ../rtl/vectrex.vhd
@@ -8,7 +7,8 @@ set_global_assignment -name VHDL_FILE ../rtl/gen_ram.vhd
 set_global_assignment -name VHDL_FILE ../rtl/cpu09l_128a.vhd
 set_global_assignment -name VHDL_FILE ../rtl/dac.vhd
 set_global_assignment -name VERILOG_FILE ../rtl/mist_io.v
-set_global_assignment -name VERILOG_FILE ../rtl/pll.v
+set_global_assignment -name VERILOG_FILE ../rtl/i2s.v
+set_global_assignment -name QIP_FILE ../rtl/pll.qip
 set_global_assignment -name VERILOG_FILE ../rtl/mc6809is.v
 set_global_assignment -name VERILOG_FILE ../rtl/mc6809.v
 set_global_assignment -name VHDL_FILE ../rtl/sp0256.vhd
