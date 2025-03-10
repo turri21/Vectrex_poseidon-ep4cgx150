@@ -1,0 +1,10 @@
+
+
+F:/FPGA-POSEIDON-2025/Vectrex-Poseidon-main/rtl/pll.v
+
+Mar 09 02PM:51:51>: Error in CNX file format.
+
+Error messages are listed in file
+F:/FPGA-POSEIDON-2025/Vectrex-Poseidon-main/rtl/pll.cnxerr.
+
+Can't create the custom megafunction variation file(s)

@@ -100,7 +100,7 @@ localparam SEP = "";
 
 vectrex_mist guest
 (
- .CLOCK_27    (CLOCK_50),
+ .CLOCK_50    (CLOCK_50),
  .*
 );
 

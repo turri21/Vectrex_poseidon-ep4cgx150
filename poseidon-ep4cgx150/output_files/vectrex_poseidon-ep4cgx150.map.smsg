@@ -1,0 +1,2 @@
+Info (10281): Verilog HDL Declaration information at mist_io.v(47): object "SPI_DO" differs only in case from object "spi_do" in the same scope File: F:/FPGA-POSEIDON-2025/Vectrex-Poseidon-main/rtl/mist_io.v Line: 47
+Info (10281): Verilog HDL Declaration information at mc6809is.v(53): object "ADDR" differs only in case from object "addr" in the same scope File: F:/FPGA-POSEIDON-2025/Vectrex-Poseidon-main/rtl/mc6809is.v Line: 53

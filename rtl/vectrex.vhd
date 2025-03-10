@@ -152,7 +152,8 @@ port
 	speech_mode  : in  std_logic;
 	video_csync  : out std_logic;
 	frame		    : out std_logic;
-	
+	overburn     : in  std_logic;
+
 	audio_out    : out std_logic_vector(9 downto 0);
 	cart_addr    : out std_logic_vector(14 downto 0);
 	cart_do      : in std_logic_vector( 7 downto 0);
@@ -416,7 +417,14 @@ end component mc6809;
  signal speech_rdy     : std_logic;
  signal sp0256_rdy     : std_logic;
 
-
+ signal pix_g,pix_r,pix_b : std_logic;
+ signal subt            : std_logic_vector(7 downto 0);
+ signal mask            : std_logic_vector(7 downto 0);
+ signal pix             : std_logic_vector(7 downto 0);
+ signal pix_fx          : std_logic_vector(7 downto 0);
+ signal pix_c           : std_logic_vector(7 downto 0);
+ signal pix_cc          : std_logic_vector(7 downto 0);
+ signal dac_ob          : std_logic_vector(7 downto 0);
  
 begin
 
@@ -693,6 +701,8 @@ begin
 		end if;
 	end if;
 end process;
+
+
 
 
 -- uncomment when vram_width is 4

@@ -1,6 +1,7 @@
 module vectrex_mist
 (
 	input         CLOCK_27,
+	input         CLOCK_50,
 	output        LED,
 	output  [5:0] VGA_R,
 	output  [5:0] VGA_G,
@@ -26,7 +27,13 @@ module vectrex_mist
 	output        SDRAM_nCS,
 	output  [1:0] SDRAM_BA,
 	output        SDRAM_CLK,
-	output        SDRAM_CKE
+	output        SDRAM_CKE,
+	
+`ifdef I2S_AUDIO
+	output        I2S_BCK,
+	output        I2S_LRCK,
+	output        I2S_DATA
+`endif	
 );
 
 `include "../rtl/build_id.v" 
@@ -73,18 +80,55 @@ wire  [7:0] ioctl_dout;
 
 assign LED = !ioctl_downl;
 
-wire 			clk_24, clk_12;
-wire 			pll_locked;
+wire 			clock27_in, clk_24, clk_12;
+wire 			pll_locked, pll_locked2;
+
+clock27 clock27 (
+	.inclk0			( CLOCK_50		),
+	.areset			( 0				),
+	.c0				( clock27_in   ),
+	.locked			( pll_locked2	)
+	);
+
 
 pll pll (
-	.inclk0			( CLOCK_27		),
+	.inclk0			( clock27_in   ),
 	.areset			( 0				),
-	.c0				( clk_24		),
-	.c1				( clk_12		),
+	.c0				( clk_24		   ),
+	.c1				( clk_12		   ),
 	.locked			( pll_locked	)
 	);
 
-assign SDRAM_CLK = clk_24;
+//assign SDRAM_CLK = ~clk_24;
+
+altddio_out
+#(
+        .extend_oe_disable("OFF"),
+        .intended_device_family("Cyclone IV GX"),
+        .invert_output("OFF"),
+        .lpm_hint("UNUSED"),
+        .lpm_type("altddio_out"),
+        .oe_reg("UNREGISTERED"),
+        .power_up_high("OFF"),
+        .width(1)
+)
+sdramclk_ddr
+(
+        .datain_h(1'b0),
+        .datain_l(1'b1),
+        .outclock(clk_24),
+        .dataout(SDRAM_CLK),
+        .aclr(1'b0),
+        .aset(1'b0),
+        .oe(1'b1),
+        .outclocken(1'b1),
+        .sclr(1'b0),
+        .sset(1'b0)
+);
+
+
+
+
 wire [15:0] sdram_do;
 assign cart_do = sdram_do[7:0];
 
@@ -160,11 +204,12 @@ vectrex vectrex (
 	.btn22          ( status[4] ? joystick_0[5] : joystick_1[5]),
 	.btn23          ( status[4] ? joystick_0[6] : joystick_1[6]),
 	.btn24          ( status[4] ? joystick_0[7] : joystick_1[7]),
-	.pot_x_2        ( pot_x_2			),
-	.pot_y_2        ( pot_y_2			),
-	.leds				(					),
-	.dbg_cpu_addr	(					)
+	.pot_x_2        ( pot_x_2	   ),
+	.pot_y_2        ( pot_y_2		),
+	.leds				 (					),
+	.dbg_cpu_addr	 (					)
 	);
+
 
 dac dac (
 	.clk_i			( clk_24			),
@@ -172,6 +217,27 @@ dac dac (
 	.dac_i			( audio			),
 	.dac_o			( AUDIO_L		)
 	);
+	
+wire signed [15:0] audio_amp = audio <<< 2;	
+	
+`ifdef I2S_AUDIO
+i2s i2s (
+	.reset(0),
+	.clk(clk_24),
+	.clk_rate(32'd24_000_000),
+
+	.sclk(I2S_BCK),
+	.lrclk(I2S_LRCK),
+	.sdata(I2S_DATA),
+
+	.left_chan({audio_amp, 6'b000000}),
+	.right_chan({audio_amp, 6'b000000})
+);
+
+`endif	
+	
+	
+	
 assign AUDIO_R = AUDIO_L;
 
 //////////////////   VIDEO   //////////////////
